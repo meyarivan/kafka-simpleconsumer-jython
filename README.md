@@ -18,7 +18,7 @@ zookeeper-3.3.4.jar
 
 
 To run / test the consumer:
-
-#replace MAXHEAP with appropriate heapsize (ex: no of brokers * no of partitions * 64MB * 1.5)
+```
+# replace MAXHEAP with appropriate heapsize (ex: no of brokers * no of partitions * 64MB * 1.5)
 java -XmxMAXHEAP -cp jython-standalone-2.7-b1.jar org.python.util.jython main.py
-
+```
