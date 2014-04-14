@@ -34,7 +34,7 @@ class KafkaConsumer(object):
         consumer = SimpleConsumer(self.hostname, self.conn_params['port'], 
                                   self.conn_params['nrecs'], self.conn_params['bufsize'])
 
-        offset =  long(consumer.getOffsetsBefore("metrics", self.partition, long(time.time() * 1000), 3)[0]) #TODO
+        offset =  long(consumer.getOffsetsBefore(self.topic, self.partition, long(time.time() * 1000), 3)[0]) #TODO
  
         while True:
             req = FetchRequest(self.topic, self.partition, offset, 1024 * 1024 * 64)
