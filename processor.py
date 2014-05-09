@@ -6,11 +6,10 @@ sys.path.extend(["lib/" + x for x in os.listdir("lib") if x.endswith('.jar')])
 
 import jarray
 from java.util import Map
+import java.net.InetAddress as InetAddress
 
 from com.google.protobuf import ByteString
 from com.mozilla.bagheera.BagheeraProto import BagheeraMessage
-
-import com.alibaba.fastjson.JSON as JSON
 
 
 class BagheeraMessageProcessor:
@@ -23,10 +22,13 @@ class BagheeraMessageProcessor:
 
         if bmsg.getOperation() == BagheeraMessage.Operation.CREATE_UPDATE:
             try:
-                fhr = JSON.parseObject(bmsg.getPayload().toStringUtf8() , Map)
+                payload = bmsg.getPayload().toStringUtf8()
+                ip = InetAddress.getByAddress(bmsg.getIpAddr().toByteArray())
+                ts = bmsg.getTimestamp()
+
+                queue.put((id(self), payload, ts, ip))
             except:
                 return
 
-            queue.put((id(self), fhr['version']))
             
 

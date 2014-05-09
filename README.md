@@ -1,5 +1,5 @@
-bagheera-kafka-testconsumer
-===========================
+bagheera-kafka-simpleconsumer-jython
+====================================
 
 Simple consumer for Bagheera messages stored in Kafka
 
@@ -13,7 +13,8 @@ Requires following libraries under lib/ subdir.
 * snappy-java-1.0.4.1.jar
 * zkclient-0.1.jar
 * zookeeper-3.3.4.jar
-
+* bagheera-0.15.jar
+* fastjson-1.1.39.jar
 
 To run / test the consumer:
 ```

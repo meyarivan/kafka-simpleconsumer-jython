@@ -23,18 +23,18 @@ def runner():
             queues.append(queue)
             bmp = BagheeraMessageProcessor(queue)
             bmp_map[id(bmp)] = (host, part)
-            kc = KafkaConsumer(host, {}, 'metrics', part, bmp.processor)
+            kc = KafkaConsumer(host, {}, config.topic, part, bmp.processor)
             t = threading.Thread(target = kc.process_messages_forever)
             t.start()
 
     while True:
         for q in queues:
             try:
-                x, y = q.get(False)
+                pid, payload, ts, ip = q.get()
+                print bmp_map[pid], ts, ip
             except Queue.Empty:
                 continue
 
-            print bmp_map[x],y
 
 
 if __name__ == '__main__':
