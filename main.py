@@ -46,12 +46,12 @@ def runner(offsets):
                 continue
 
             if v[1] == 'PUT':
-                pid, op, ts, ipaddr, payload = v
-                System.out.println('%s %d %s %s' % (op, ts, ipaddr, payload))
+                pid, op, ts, ipaddr, doc_id, payload = v
+                System.out.println('%s %d %s %s %s' % (op, ts, ipaddr, doc_id, payload))
 
-            if v[1] == 'DELETE':
-                pid, op, ts, ipaddr = v
-                System.out.println('%s %d %s' % (op, ts, ipaddr))
+            elif v[1] == 'DELETE':
+                pid, op, ts, ipaddr, doc_id = v
+                System.out.println('%s %d %s %s' % (op, ts, ipaddr, doc_id))
 
 
 def parse_offsets(filex):

@@ -12,6 +12,7 @@ from com.mozilla.bagheera.BagheeraProto import BagheeraMessage
 
 import com.alibaba.fastjson.JSON as JSON
 import java.net.Inet4Address as Inet4Address
+from java.lang import System
 
 
 class BagheeraMessageProcessor:
@@ -24,14 +25,16 @@ class BagheeraMessageProcessor:
         ts = bmsg.getTimestamp()
         ip = Inet4Address.getByAddress(bmsg.getIpAddr().toByteArray()).getHostAddress()
         payload = bmsg.getPayload().toStringUtf8()
+        doc_id = bmsg.getId()
+        
         if bmsg.getOperation() == BagheeraMessage.Operation.CREATE_UPDATE:
             try:
                 fhr = JSON.parseObject(payload, Map)
             except:
                 return
 
-            queue.put((id(self), 'PUT', ts, ip, payload))
+            queue.put((id(self), 'PUT', ts, ip, doc_id, payload))
 
             
         else:
-            queue.put((id(self), 'DELETE', ts, ip))
+            queue.put((id(self), 'DELETE', ts, doc_id, ip))
