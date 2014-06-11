@@ -1,7 +1,7 @@
 bagheera-kafka-simpleconsumer-jython
 ====================================
 
-Simple consumer for Bagheera messages stored in Kafka
+Simple consumer for Bagheera messages stored in Kafka which writes data to stdout and offsets to stderr.
 
 Requires following libraries under lib/ subdir.
 
@@ -17,8 +17,18 @@ Requires following libraries under lib/ subdir.
 * fastjson-1.1.39.jar
 
 To run / test the consumer:
-```
-# replace MAXHEAP with appropriate heapsize (ex: no of brokers * no of partitions * 64MB * 1.5)
-java -XmxMAXHEAP -cp jython-standalone-2.7-b1.jar org.python.util.jython main.py file_offsets #see main.py/parse_offsets for details
+
+* Update config.py with relevant values for your environment
+* Generate initial offsets using any existing data or use gen_offsets.py
+* Run :)
 
 ```
+# replace MAXHEAP with appropriate heapsize (ex: no of brokers * no of partitions * 64MB * 1.5)
+java -XmxMAXHEAP -cp jython-standalone-2.7-b1.jar org.python.util.jython main.py file_containing_offsets
+
+```
+
+Data is written to stdout as space separated values consisting of request_type, timestamp_millis, ip_addr and payload
+
+Offset data is periodically written to stderr as dict serialized to json containing the keys partition, topic, metrics, offset, hostname and time_millis
+
