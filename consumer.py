@@ -3,6 +3,7 @@ import sys
 import time
 import os.path
 import json
+import config
 
 sys.path.extend(["lib/"+x for x in os.listdir("lib") if x.endswith('.jar')])
 
@@ -15,11 +16,7 @@ from kafka.consumer import SimpleConsumer
 
 
 class KafkaConsumer(object):
-    DEFAULT_CONN_PARAMS = {
-        'port' : 9092,
-        'nrecs' : 10000,
-        'bufsize' : 10240000
-        }
+    DEFAULT_CONN_PARAMS = config.DEFAULT_CONN_PARAMS
 
     def __init__(self, hostname, conn_params, topic, partition, 
                  processor, offset, offset_update_freq):
