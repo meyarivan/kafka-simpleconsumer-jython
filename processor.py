@@ -2,14 +2,16 @@ import os
 import sys
 import time
 
-sys.path.extend(["lib/" + x for x in os.listdir("lib") if x.endswith('.jar')])
+sys.path.extend(["lib/"+x for x in os.listdir("lib") if x.endswith('.jar')])
 
 import jarray
 from java.util import Map
-import java.net.InetAddress as InetAddress
 
 from com.google.protobuf import ByteString
 from com.mozilla.bagheera.BagheeraProto import BagheeraMessage
+
+import com.alibaba.fastjson.JSON as JSON
+import java.net.Inet4Address as Inet4Address
 
 
 class BagheeraMessageProcessor:
@@ -19,16 +21,17 @@ class BagheeraMessageProcessor:
     def processor(self, msg):
         bmsg = BagheeraMessage.parseFrom(ByteString.copyFrom(msg.message().payload()))
         queue = self.queue
-
+        ts = bmsg.getTimestamp()
+        ip = Inet4Address.getByAddress(bmsg.getIpAddr().toByteArray()).getHostAddress()
+        payload = bmsg.getPayload().toStringUtf8()
         if bmsg.getOperation() == BagheeraMessage.Operation.CREATE_UPDATE:
             try:
-                payload = bmsg.getPayload().toStringUtf8()
-                ip = InetAddress.getByAddress(bmsg.getIpAddr().toByteArray())
-                ts = bmsg.getTimestamp()
-
-                queue.put((id(self), payload, ts, ip))
+                fhr = JSON.parseObject(payload, Map)
             except:
                 return
 
-            
+            queue.put((id(self), 'PUT', ts, ip, payload))
 
+            
+        else:
+            queue.put((id(self), 'DELETE', ts, ip))

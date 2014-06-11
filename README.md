@@ -19,5 +19,6 @@ Requires following libraries under lib/ subdir.
 To run / test the consumer:
 ```
 # replace MAXHEAP with appropriate heapsize (ex: no of brokers * no of partitions * 64MB * 1.5)
-java -XmxMAXHEAP -cp jython-standalone-2.7-b1.jar org.python.util.jython main.py
+java -XmxMAXHEAP -cp jython-standalone-2.7-b1.jar org.python.util.jython main.py file_offsets #see main.py/parse_offsets for details
+
 ```

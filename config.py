@@ -1,8 +1,13 @@
 
-# List of broker nodes
-bagheera_nodes = []
+bagheera_nodes = [
+    'host1',
+    'host2',
+    'host3'
+    ]
 
-topic = ''
+topic = 'TOPIC'
 
-partitions = []
+partitions = [0]
 
+# dump offsets after N records (per thread)
+offset_update_freq = 1000
