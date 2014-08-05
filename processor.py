@@ -29,11 +29,11 @@ class BagheeraMessageProcessor:
         
         if bmsg.getOperation() == BagheeraMessage.Operation.CREATE_UPDATE:
             try:
-                fhr = JSON.parseObject(payload, Map)
+                json_obj = JSON.parseObject(payload, Map)
             except:
                 return
 
-            queue.put((id(self), 'PUT', ts, ip, doc_id, payload))
+            queue.put((id(self), 'PUT', ts, ip, doc_id, json_obj))
 
             
         else:

@@ -21,25 +21,26 @@ from java.lang import System
 
 def runner(offsets):
     
-    queues = []
+    queues = {}
     bmp_map = {}
-    topic = config.topic
     offset_update_freq = config.offset_update_freq
 
     for host in config.bagheera_nodes:
-        for partition in config.partitions:
-            queue = Queue.Queue(256)
-            queues.append(queue)
-            bmp = BagheeraMessageProcessor(queue)
-            bmp_map[id(bmp)] = (host, partition)
+        for topic in config.topics:
+            for partition in config.partitions:
+                queue = Queue.Queue(256)
+                queues[(host, topic, partition)] = queue
 
-            offset = offsets[(host, topic, partition)]
-            kc = KafkaConsumer(host, {}, topic, partition, bmp.processor, offset, offset_update_freq)
-            t = threading.Thread(target = kc.process_messages_forever)
-            t.start()
+                bmp = BagheeraMessageProcessor(queue)
+                bmp_map[id(bmp)] = (host, topic, partition)
+
+                offset = offsets[(host, topic, partition)]
+                kc = KafkaConsumer(host, {}, topic, partition, bmp.processor, offset, offset_update_freq)
+                t = threading.Thread(target = kc.process_messages_forever)
+                t.start()
 
     while True:
-        for q in queues:
+        for htp, q in queues.iteritems():
             try:
                 v = q.get(False)
             except Queue.Empty:
@@ -47,11 +48,11 @@ def runner(offsets):
 
             if v[1] == 'PUT':
                 pid, op, ts, ipaddr, doc_id, payload = v
-                System.out.println('%s %d %s %s %s' % (op, ts, ipaddr, doc_id, payload))
+                System.out.println('%s %s %d %s %s %s' % (htp[1], op, ts, ipaddr, doc_id, payload))
 
             elif v[1] == 'DELETE':
                 pid, op, ts, ipaddr, doc_id = v
-                System.out.println('%s %d %s %s' % (op, ts, ipaddr, doc_id))
+                System.out.println('%s %s %d %s %s' % (htp[1], op, ts, ipaddr, doc_id))
 
 
 def parse_offsets(filex):
@@ -73,7 +74,7 @@ def parse_offsets(filex):
         except:
             pass
             
-    if (not offsets) or (len(offsets) != (len(config.partitions) * len(config.bagheera_nodes))):
+    if (not offsets) or (len(offsets) != (len(config.topics) * len(config.partitions) * len(config.bagheera_nodes))):
         System.err.println("ERROR: could not find valid initial offsets for given configuration")
         sys.exit(1)
 
@@ -82,8 +83,14 @@ def parse_offsets(filex):
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
-        print >> sys.stderr, "Needs file containing offsets as first argument"
+        System.err.println("Needs file containing offsets as first argument")
         sys.exit(1)
     
-        
-    runner(parse_offsets(sys.argv[1]))
+    try:
+        runner(parse_offsets(sys.argv[1]))
+    except:
+        System.err.println("ERROR: " + traceback.format_exc())
+    finally:
+        System.exit(1)
+
+

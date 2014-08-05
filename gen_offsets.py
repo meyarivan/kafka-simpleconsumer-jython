@@ -24,24 +24,25 @@ def get_offsets(offsets_after_time_millis,
     curr_time = long(time.time() * 1000)
 
     for host in config.bagheera_nodes:
-        for partition in config.partitions:
-            consumer = SimpleConsumer(host, conn_params['port'],
-                                      conn_params['nrecs'], conn_params['bufsize'])
+        for topic in config.topics:
+            for partition in config.partitions:
+                consumer = SimpleConsumer(host, conn_params['port'],
+                                          conn_params['nrecs'], conn_params['bufsize'])
 
-            offset =  long(consumer.getOffsetsBefore(config.topic, 
-                                                     partition, 
-                                                     offsets_after_time_millis, 1)[0])
+                offset =  long(consumer.getOffsetsBefore(topic, 
+                                                         partition, 
+                                                         offsets_after_time_millis, 1)[0])
 
 
-            consumer.close()
+                consumer.close()
 
-            System.out.println(json.dumps({
-                        'time_millis' : curr_time,
-                        'hostname' : host, 
-                        'topic' : config.topic,
-                        'partition' : partition,
-                        'offset' : offset
-                        }))
+                System.out.println(json.dumps({
+                            'time_millis' : curr_time,
+                            'hostname' : host, 
+                            'topic' : topic,
+                            'partition' : partition,
+                            'offset' : offset
+                            }))
 
                         
 

@@ -5,7 +5,7 @@ bagheera_nodes = [
     'host3'
     ]
 
-topic = 'TOPIC'
+topics = ['TOPIC1', 'TOPIC2']
 
 partitions = [0]
 
