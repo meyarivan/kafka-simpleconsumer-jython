@@ -17,6 +17,7 @@ sys.path.extend(['log4j.properties'])
 sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
 
 from java.lang import System
+import com.alibaba.fastjson.JSON as JSON
 
 
 def runner(offsets):
@@ -48,7 +49,7 @@ def runner(offsets):
 
             if v[1] == 'PUT':
                 pid, op, ts, ipaddr, doc_id, payload = v
-                System.out.println('%s %s %d %s %s %s' % (htp[1], op, ts, ipaddr, doc_id, payload))
+                System.out.println('%s %s %d %s %s %s' % (htp[1], op, ts, ipaddr, doc_id, JSON.toJSONString(payload)))
 
             elif v[1] == 'DELETE':
                 pid, op, ts, ipaddr, doc_id = v
